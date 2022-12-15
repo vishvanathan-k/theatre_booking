@@ -50,7 +50,20 @@
      </rect>
     </property>
     <property name="text">
-     <string>Cancel</string>
+     <string>Cancel ticket</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Back">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>140</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Back</string>
     </property>
    </widget>
   </widget>

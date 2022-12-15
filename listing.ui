@@ -67,6 +67,19 @@
      <string>Proceed</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="back">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>200</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Back </string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

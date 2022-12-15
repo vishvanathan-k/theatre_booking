@@ -29,16 +29,22 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>80</y>
+      <y>10</y>
       <width>721</width>
-      <height>111</height>
+      <height>171</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;; color:rgb(0,0,0)</string>
     </property>
     <property name="text">
-     <string>Welcome to kiosk booking centre</string>
+     <string>Welcome to Haran's Javiha Ticket  booking centre</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -70,7 +76,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>Log in</string>
+     <string>Sign in</string>
     </property>
    </widget>
    <widget class="QPushButton" name="create">
@@ -86,7 +92,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>Create a new account</string>
+     <string>Sign Up</string>
     </property>
    </widget>
   </widget>

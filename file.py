@@ -1,6 +1,7 @@
 #writing a binary file
 import os
 import pickle
+from encrypt import hash
 
 screen = ["resony","khatija","grahan","juve","aura"]
 cinemas = ["ponniyin selvan 2","Jailer","Varisu","Oppenheimer","Adipurush"]
@@ -22,12 +23,32 @@ def read_user():
 
 def write_user(name, password):
     with open('user.dat', 'ab') as f:
-        user = [name, password]
+        user = [name, hash(password)]
         pickle.dump(user, f)
 
+def check_user(name):
+    user = read_user()
+    for i in user:
+        if i[0] == name:
+            return True
+    return False
+
+def change_password(name, password):
+    with open('user.dat', 'rb') as f, open('temp.dat', 'wb') as f1:
+        try:
+            while True:
+                user = pickle.load(f)
+                if user[0] == name:
+                    user[1] = password
+                pickle.dump(user, f1)
+        except EOFError:
+            pass
+    os.remove('user.dat')
+    os.rename('temp.dat', 'user.dat')
+
 #To read and write the cinemas
-def write_cinema(language,screen,cinema,timings,price):
-    d = read_cinema()
+def write_show(language,screen,cinema,timings,price):
+    d = read_show()
     with open('cinema.dat',"ab") as f:
         x = [language,screen,cinema,timings,price]
         g = False
@@ -48,7 +69,7 @@ def get_price(screen,cinema,timings):
         except EOFError:
             return 299
 
-def read_cinema():
+def read_show():
     try:
         with open('cinema.dat',"rb") as f:
             cinema = []
@@ -61,7 +82,7 @@ def read_cinema():
     except FileNotFoundError:
         return []
 
-def delete_cinema(screen,cinema,timings):
+def delete_show(screen,cinema,timings):
     with open('cinema.dat','rb') as f, open('temp.dat','wb') as f1:
         try:
             while True:
@@ -105,7 +126,6 @@ def modify_seats(screen,cinema,timings,booked_seats):
             pass
     os.remove('seats.dat')
     os.rename('temp.dat','seats.dat')
-
 
 def write_booking(bill_no,user_name,screen,cinema,timings,booked_seats):
     with open('booking.dat',"ab") as f:
@@ -157,9 +177,28 @@ def cancel_ticket(bill_no):
         try:
             while True:
                 data = pickle.load(f)
-                if data[0].lower()==dat[2].lower() and data[1].lower()==dat[3].lower() and data[2]==dat[4]:
+                if data[0].lower()==dat[2].lower() and data[1].lower()==dat[3].lower() and data[2].lower()==dat[4].lower():
                     for i in dat[-1]:
                         data[3].remove(i)
                 pickle.dump(data,f1)
         except EOFError:
             pass
+    os.remove('seats.dat')
+    os.rename('temp.dat','seats.dat')
+
+def write_secques(user_name,qno,ans):
+    with open('secques.dat',"ab") as f:
+        pickle.dump([user_name,qno,ans],f)
+
+def read_secques(user_name):
+    try:
+        with open('secques.dat',"rb") as f:
+            try:
+                while True:
+                    data = pickle.load(f)
+                    if data[0].lower()==user_name.lower():
+                        return data[1],data[2]
+            except EOFError:
+                return None,None
+    except FileNotFoundError:
+        return None,None
