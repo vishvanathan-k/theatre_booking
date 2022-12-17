@@ -72,13 +72,39 @@
     <property name="geometry">
      <rect>
       <x>780</x>
-      <y>150</y>
+      <y>360</y>
       <width>251</width>
       <height>61</height>
      </rect>
     </property>
     <property name="text">
      <string>Sign out</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="AddMov">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>150</y>
+      <width>251</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Movie</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="RemoveMov">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>220</y>
+      <width>251</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove Movie</string>
     </property>
    </widget>
   </widget>

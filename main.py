@@ -1,33 +1,34 @@
+
 # importing modules and libraries
 import sys
-import file
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from functools import partial
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QIcon
-import file
 import random
+
+import file
 import _var
 from encrypt import hash
 
-# TODO: Back button function, admin able to see who has booked what seat, admin able to add or remove movies
+# TODO: admin able to see who has booked what seat
 Questions = [
     "In which year were you born?",
     "Where were you born?",
-    "What is your favourite color?",
-    "What is your favourite book?",
-    "Which team is your favourite sports team",
-    "What is your favourite food",
+    "What is your favorite color?",
+    "What is your favorite book?",
+    "What is your favorite sport?",
+    "What is your favorite food?",
 ]
 
-
+#clears the widget in stacked widget
 def clear(widget):
     for i in range(widget.count()):
         widget.removeWidget(widget.currentWidget())
 
-
+#Go to the welcome page after clearing 
 def back(widget):
     clear(widget)
     welcome = WelcomeScreen()
@@ -78,6 +79,8 @@ class LoginScreen(QDialog):
     def forgotpassword(self):
         if self.emailfield.text() == "":
             self.error.setText("Please enter your username")
+        elif self.emailfield.text() == "admin":
+            return None
         elif not file.check_user(self.emailfield.text()):
             self.error.setText("user does not exist")
         else:
@@ -234,6 +237,7 @@ class Front_Page(QDialog):
         widget.addWidget(username)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
+    # Navigate to booking history page
     def _func2_(self):
         clear(widget)
         booking = Booking_History()
@@ -249,6 +253,8 @@ class Admin_Page(QDialog):
         self.Add.clicked.connect(self.add)
         self.Remove.clicked.connect(self.remove)
         self.signout.clicked.connect(self.signoutfunc)
+        self.AddMov.clicked.connect(self.addmov)
+        self.RemoveMov.clicked.connect(self.removemov)
         self.AdminTable.setSizeAdjustPolicy(
             QAbstractScrollArea.AdjustToContents)
         self.AdminTable.setHorizontalHeaderLabels(
@@ -273,7 +279,9 @@ class Admin_Page(QDialog):
         self.dialog = QDialog()
         layout = QFormLayout()
         self.lang = QComboBox()
-        self.lang.addItems(["English", "Hindi", "Tamil"])
+        x = file.read_movie()
+        for i in x:
+            self.lang.addItem(i[0])
         self.lang.currentIndexChanged.connect(self.langchange)
         self.movie = QComboBox()
         self.Screen = QComboBox()
@@ -299,15 +307,10 @@ class Admin_Page(QDialog):
 
     def langchange(self):
         lang = self.lang.currentText()
-        if lang.lower() == "tamil":
-            self.movie.clear()
-            self.movie.addItems(["ponniyin selvan 2", "Jailer", "Varisu"])
-        elif lang.lower() == "hindi":
-            self.movie.clear()
-            self.movie.addItems(["Adipurush"])
-        elif lang.lower() == "english":
-            self.movie.clear()
-            self.movie.addItems(["Oppenheimer"])
+        self.movie.clear()
+        for i in file.read_movie():
+            if lang.lower() == i[0].lower():
+                self.movie.addItem(i[1])
 
     def getAddDetails(self):
         lang = self.lang.currentText()
@@ -315,6 +318,14 @@ class Admin_Page(QDialog):
         movie = self.movie.currentText()
         timing = self.timing.currentText()
         price = self.price.value()
+        if lang == "" or screen == "" or movie == "" or timing == "":
+            err = QMessageBox()
+            err.setIcon(QMessageBox.Critical)
+            err.setText("Please fill in all inputs.")
+            err.setWindowTitle("Error")
+            err.setEscapeButton(QMessageBox.Close)
+            err.exec_()
+            return None
         d = file.read_show()
         for i in d:
             if i[0] == lang and i[1] == screen and i[2] == movie and i[3] == timing:
@@ -325,7 +336,7 @@ class Admin_Page(QDialog):
                 err.setEscapeButton(QMessageBox.Close)
                 err.exec_()
                 self.dialog.close()
-                return
+                return None
         file.write_show(lang, screen, movie, timing, price)
         self.dialog.close()
         self.view()
@@ -365,7 +376,89 @@ class Admin_Page(QDialog):
                     str(len(self.seats) * int(row_data[4])))
             )
         self.AdminTable.resizeColumnsToContents()
+        
+    def addmov(self):
+        self.dialog = QDialog()
+        layout = QFormLayout()
+        self.l = QComboBox()
+        self.l.addItems(["hindi", "english", "tamil","telugu","kannada","malayalam","bengali","marathi","gujarati","punjabi","urdu"])
+        self.b = QLineEdit()
+        self.b.setPlaceholderText("Movie Name")
+        self.s = QPushButton("Add")
+        self.s.clicked.connect(self.addmovfunc)
+        layout.addRow("Language", self.l)
+        layout.addRow("Movie", self.b)
+        layout.addRow(self.s)
+        self.dialog.setLayout(layout)
+        self.dialog.exec_()
+        self.dialog.show()
+    
+    def addmovfunc(self):
+        lang = self.l.currentText()
+        movie = self.b.text()
+        if lang == "" or movie == "":
+            err = QMessageBox()
+            err.setIcon(QMessageBox.Critical)
+            err.setText("Please fill in all inputs.")
+            err.setWindowTitle("Error")
+            err.setEscapeButton(QMessageBox.Close)
+            err.exec_()
+            return None
+        d = file.read_movie()
+        for i in d:
+            if i[0] == lang and i[1] == movie:
+                err = QMessageBox()
+                err.setIcon(QMessageBox.Critical)
+                err.setText("Movie already exists.")
+                err.setWindowTitle("Error")
+                err.setEscapeButton(QMessageBox.Close)
+                err.exec_()
+                self.dialog.close()
+                return None
+        file.write_movie(lang, movie)
+        self.dialog.close()
+        self.view()
+    
+    def removemov(self):
+        self.dialog = QDialog()
+        layout = QFormLayout()
+        self.l = QComboBox()
+        x = file.read_movie()
+        for i in x:
+            self.l.addItem(i[1])
+        self.s = QPushButton("Remove")
+        self.s.clicked.connect(self.removemovfunc)
+        layout.addRow("Movie", self.l)
+        layout.addRow(self.s)
+        self.dialog.setLayout(layout)
+        self.dialog.exec_()
+        self.dialog.show()
 
+    def removemovfunc(self):
+        movie = self.l.currentText()
+        if movie == "":
+            err = QMessageBox()
+            err.setIcon(QMessageBox.Critical)
+            err.setText("Please fill in all inputs.")
+            err.setWindowTitle("Error")
+            err.setEscapeButton(QMessageBox.Close)
+            err.exec_()
+            return None
+        d = file.read_movie()
+        for i in d:
+            if i[1] == movie:
+                file.remove_movie(i[1])
+                self.dialog.close()
+                self.view()
+                return None
+        err = QMessageBox()
+        err.setIcon(QMessageBox.Critical)
+        err.setText("Movie does not exist.")
+        err.setWindowTitle("Error")
+        err.setEscapeButton(QMessageBox.Close)
+        err.exec_()
+        self.dialog.close()
+        return None
 
 class Booking_History(QDialog):
     # class containing the booking history page
@@ -486,14 +579,7 @@ class Seat_Page(QDialog):
         self.seats = file.read_seats(_var.Screen, _var.Cinema, _var.Timing)
         self.rows = 10
         self.columns = 10
-        self.label_2.setText(
-            "Cinema: "
-            + _var.Cinema
-            + " Screen: "
-            + _var.Screen
-            + " Timing: "
-            + _var.Timing
-        )
+        self.label_2.setText("Cinema: "+ _var.Cinema+ " Screen: "+ _var.Screen+ " Timing: "+ _var.Timing)
 
         _list = [
             "A1",

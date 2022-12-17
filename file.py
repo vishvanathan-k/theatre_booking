@@ -3,11 +3,7 @@ import os
 import pickle
 from encrypt import hash
 
-screen = ["resony","khatija","grahan","juve","aura"]
-cinemas = ["ponniyin selvan 2","Jailer","Varisu","Oppenheimer","Adipurush"]
-timing = ["10:00 AM","1:00 PM","05:00 PM","09:00 PM"]
-
-#user should be stored [name,password]
+#TO read users as [username,password]
 def read_user():
     try:
         with open('user.dat', 'rb') as f:
@@ -202,3 +198,32 @@ def read_secques(user_name):
                 return None,None
     except FileNotFoundError:
         return None,None
+
+def write_movie(language,movie_name):
+    with open('movies.dat',"ab") as f:
+        pickle.dump([language,movie_name],f)
+    
+def read_movie():
+    try:
+        with open('movies.dat',"rb") as f:
+            movie = []
+            try:
+                while True:
+                    movie.append(pickle.load(f))
+            except EOFError:
+                pass
+            return movie
+    except FileNotFoundError:
+        return []
+
+def remove_movie(language,movie_name):
+    with open('movies.dat','rb') as f, open('temp.dat','wb') as f1:
+        try:
+            while True:
+                data = pickle.load(f)
+                if data[0].lower()!=language.lower() or data[1].lower()!=movie_name.lower():
+                    pickle.dump(data,f1)
+        except EOFError:
+            pass
+    os.remove('movies.dat')
+    os.rename('temp.dat','movies.dat')
