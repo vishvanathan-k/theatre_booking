@@ -3,7 +3,8 @@ import os
 import pickle
 from encrypt import hash
 
-#TO read users as [username,password]
+#To read and write users as [username,password (hashed)] along with options to change password and check if user exists
+#user.dat starts
 def read_user():
     try:
         with open('user.dat', 'rb') as f:
@@ -41,11 +42,13 @@ def change_password(name, password):
             pass
     os.remove('user.dat')
     os.rename('temp.dat', 'user.dat')
+#ends
 
-#To read and write the cinemas
+#show.dat starts
+#To read and write the shows
 def write_show(language,screen,cinema,timings,price):
     d = read_show()
-    with open('cinema.dat',"ab") as f:
+    with open('show.dat',"ab") as f:
         x = [language,screen,cinema,timings,price]
         g = False
         for i in d:
@@ -56,7 +59,7 @@ def write_show(language,screen,cinema,timings,price):
             pickle.dump(x,f)
     
 def get_price(screen,cinema,timings):
-    with open('cinema.dat',"rb") as f:
+    with open('show.dat',"rb") as f:
         try:
             while True:
                 data = pickle.load(f)
@@ -67,7 +70,7 @@ def get_price(screen,cinema,timings):
 
 def read_show():
     try:
-        with open('cinema.dat',"rb") as f:
+        with open('show.dat',"rb") as f:
             cinema = []
             try:
                 while True:
@@ -79,7 +82,7 @@ def read_show():
         return []
 
 def delete_show(screen,cinema,timings):
-    with open('cinema.dat','rb') as f, open('temp.dat','wb') as f1:
+    with open('show.dat','rb') as f, open('temp.dat','wb') as f1:
         try:
             while True:
                 data = pickle.load(f)
@@ -87,9 +90,11 @@ def delete_show(screen,cinema,timings):
                     pickle.dump(data,f1)
         except EOFError:
             pass
-    os.remove('cinema.dat')
-    os.rename('temp.dat','cinema.dat')
+    os.remove('show.dat')
+    os.rename('temp.dat','show.dat')
+#ends
 
+#seats.dat starts     
 #To read, write and modify the seats
 def write_seats(screen,cinema,timings,booked_seats):
     with open('seats.dat',"ab") as f:
@@ -122,7 +127,9 @@ def modify_seats(screen,cinema,timings,booked_seats):
             pass
     os.remove('seats.dat')
     os.rename('temp.dat','seats.dat')
+#ends
 
+#booking.dat starts
 def write_booking(bill_no,user_name,screen,cinema,timings,booked_seats):
     with open('booking.dat',"ab") as f:
         pickle.dump([bill_no,user_name,screen,cinema,timings,booked_seats],f)
@@ -181,7 +188,10 @@ def cancel_ticket(bill_no):
             pass
     os.remove('seats.dat')
     os.rename('temp.dat','seats.dat')
+#ends
 
+#secques.dat starts
+#Write and read security questions along with answers for each user
 def write_secques(user_name,qno,ans):
     with open('secques.dat',"ab") as f:
         pickle.dump([user_name,qno,ans],f)
@@ -198,6 +208,9 @@ def read_secques(user_name):
                 return None,None
     except FileNotFoundError:
         return None,None
+#ends
+
+#movies.dat starts
 
 def write_movie(language,movie_name):
     with open('movies.dat',"ab") as f:
@@ -227,3 +240,4 @@ def remove_movie(language,movie_name):
             pass
     os.remove('movies.dat')
     os.rename('temp.dat','movies.dat')
+#ends

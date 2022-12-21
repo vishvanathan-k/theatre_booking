@@ -107,6 +107,19 @@
      <string>Remove Movie</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="BookedSeats">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>290</y>
+      <width>251</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Booked Seats</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

@@ -255,8 +255,7 @@ class Admin_Page(QDialog):
         self.signout.clicked.connect(self.signoutfunc)
         self.AddMov.clicked.connect(self.addmov)
         self.RemoveMov.clicked.connect(self.removemov)
-        self.AdminTable.setSizeAdjustPolicy(
-            QAbstractScrollArea.AdjustToContents)
+        self.AdminTable.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
         self.AdminTable.setHorizontalHeaderLabels(
             [
                 "Movie Language",
@@ -279,9 +278,7 @@ class Admin_Page(QDialog):
         self.dialog = QDialog()
         layout = QFormLayout()
         self.lang = QComboBox()
-        x = file.read_movie()
-        for i in x:
-            self.lang.addItem(i[0])
+        self.lang.addItems(set([i[0] for i in file.read_movie()]))
         self.lang.currentIndexChanged.connect(self.langchange)
         self.movie = QComboBox()
         self.Screen = QComboBox()
@@ -447,7 +444,7 @@ class Admin_Page(QDialog):
         d = file.read_movie()
         for i in d:
             if i[1] == movie:
-                file.remove_movie(i[1])
+                file.remove_movie(i[0],i[1])
                 self.dialog.close()
                 self.view()
                 return None
