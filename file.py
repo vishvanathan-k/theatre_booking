@@ -161,6 +161,20 @@ def bill_no():
     except FileNotFoundError:
         return bill
 
+def bill_no_user(user):
+    bill = []
+    try:
+        with open('booking.dat',"rb") as f:
+            try:
+                while True:
+                    data = pickle.load(f)
+                    if user.lower() == data[1].lower():
+                        bill += [data[0]]
+            except EOFError:
+                return bill
+    except FileNotFoundError:
+        return bill
+
 def cancel_ticket(bill_no):
     dat = []
     with open('booking.dat','rb') as f, open('temp.dat','wb') as f1:

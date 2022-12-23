@@ -1,4 +1,3 @@
-
 # importing modules and libraries
 import sys
 from PyQt5.QtWidgets import *
@@ -6,14 +5,12 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from functools import partial
 from PyQt5.uic import loadUi
-from PyQt5.QtGui import QIcon
 import random
 
 import file
 import _var
 from encrypt import hash
 
-# TODO: admin able to see who has booked what seat, beverages and snacks
 Questions = [
     "In which year were you born?",
     "Where were you born?",
@@ -104,7 +101,7 @@ class LoginScreen(QDialog):
     def check_answer(self):
         qno, ans = file.read_secques(self.emailfield.text())
         if self.answer.text() == ans:
-            self.dialog.close()
+            self.dialog.reject()
             self.dialog = QDialog()
             self.dialog.setWindowTitle("Forgot Password")
             self.dialog.setWindowIcon(QIcon("icon.png"))
@@ -130,7 +127,7 @@ class LoginScreen(QDialog):
     def change_password(self):
         if self.newpass.text() == self.confirmpass.text():
             file.change_password(self.emailfield.text(), hash(self.newpass.text()))
-            self.dialog.close()
+            self.dialog.reject()
         else:
             x = QMessageBox(QMessageBox.Critical, "Error", "Passwords do not match", QMessageBox.Ok,self, Qt.WindowCloseButtonHint)
             x.show()
@@ -194,7 +191,7 @@ class CreateAccScreen(QDialog):
 
     def get_answer(self):
         self.ans = self.answer.text()
-        self.dialog.close()
+        self.dialog.reject()
         file.write_secques(_var.User_Logined, self.questions.currentText(), self.ans)
         frontpage = Front_Page()
         widget.addWidget(frontpage)
@@ -300,7 +297,7 @@ class Admin_Page(QDialog):
         layout.addRow(self.Ok)
         self.langchange()
         self.dialog.setLayout(layout)
-        self.dialog.exec_()
+        self.dialog.exec()
         self.dialog.show()
 
     def langchange(self):
@@ -322,7 +319,7 @@ class Admin_Page(QDialog):
             err.setText("Please fill in all inputs.")
             err.setWindowTitle("Error")
             err.setEscapeButton(QMessageBox.Close)
-            err.exec_()
+            err.exec()
             return None
         d = file.read_show()
         for i in d:
@@ -332,11 +329,11 @@ class Admin_Page(QDialog):
                 err.setText("Show already exists.")
                 err.setWindowTitle("Error")
                 err.setEscapeButton(QMessageBox.Close)
-                err.exec_()
-                self.dialog.close()
+                err.exec()
+                self.dialog.reject()
                 return None
         file.write_show(lang, screen, movie, timing, price)
-        self.dialog.close()
+        self.dialog.reject()
         self.view()
 
     def remove(self):
@@ -388,7 +385,7 @@ class Admin_Page(QDialog):
         layout.addRow("Movie", self.b)
         layout.addRow(self.s)
         self.dialog.setLayout(layout)
-        self.dialog.exec_()
+        self.dialog.exec()
         self.dialog.show()
     
     def addmovfunc(self):
@@ -400,7 +397,7 @@ class Admin_Page(QDialog):
             err.setText("Please fill in all inputs.")
             err.setWindowTitle("Error")
             err.setEscapeButton(QMessageBox.Close)
-            err.exec_()
+            err.exec()
             return None
         d = file.read_movie()
         for i in d:
@@ -410,11 +407,11 @@ class Admin_Page(QDialog):
                 err.setText("Movie already exists.")
                 err.setWindowTitle("Error")
                 err.setEscapeButton(QMessageBox.Close)
-                err.exec_()
-                self.dialog.close()
+                err.exec()
+                self.dialog.reject()
                 return None
         file.write_movie(lang, movie)
-        self.dialog.close()
+        self.dialog.reject()
         self.view()
     
     def removemov(self):
@@ -429,7 +426,7 @@ class Admin_Page(QDialog):
         layout.addRow("Movie", self.l)
         layout.addRow(self.s)
         self.dialog.setLayout(layout)
-        self.dialog.exec_()
+        self.dialog.exec()
         self.dialog.show()
 
     def removemovfunc(self):
@@ -440,22 +437,22 @@ class Admin_Page(QDialog):
             err.setText("Please fill in all inputs.")
             err.setWindowTitle("Error")
             err.setEscapeButton(QMessageBox.Close)
-            err.exec_()
+            err.exec()
             return None
         d = file.read_movie()
         for i in d:
             if i[1] == movie:
                 file.remove_movie(i[0],i[1])
-                self.dialog.close()
                 self.view()
+                self.dialog.reject()
                 return None
         err = QMessageBox()
         err.setIcon(QMessageBox.Critical)
         err.setText("Movie does not exist.")
         err.setWindowTitle("Error")
         err.setEscapeButton(QMessageBox.Close)
-        err.exec_()
-        self.dialog.close()
+        err.exec()
+        self.dialog.reject()
         return None
 
     def GotoSee(self):
@@ -562,7 +559,7 @@ class Booking_History(QDialog):
             self,
             "Cancel Ticket",
             "Select the ticket:",
-            [str(i) for i in file.bill_no()],
+            [str(i) for i in file.bill_no_user(_var.User_Logined)],
             0,
             False,
         )
@@ -851,4 +848,4 @@ if __name__ == "__main__":
     widget.setFixedHeight(800)
     widget.setFixedWidth(1200)
     widget.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

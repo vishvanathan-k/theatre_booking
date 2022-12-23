@@ -92,7 +92,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>Sign Up</string>
+     <string>Create account</string>
     </property>
    </widget>
   </widget>
