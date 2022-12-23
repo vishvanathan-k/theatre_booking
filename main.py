@@ -227,7 +227,7 @@ class Front_Page(QDialog):
         self.label.setText("Welcome!! " + _var.User_Logined + ".")
         self.sign_out.clicked.connect(partial(back, widget))
 
-    # Navigate to seat selection page
+    # Navigate to Movie selection page
     def _func1_(self):
         clear(widget)
         username = Listing_UI()
@@ -527,9 +527,9 @@ class Booking_History(QDialog):
         )
         self.Cancel.clicked.connect(self.cancel)
         self.view()
-        self.Back.clicked.connect(self.signoutfunc)
+        self.Back.clicked.connect(self.backfunc)
 
-    def signoutfunc(self):
+    def backfunc(self):
         clear(widget)
         f = Front_Page()
         widget.addWidget(f)
